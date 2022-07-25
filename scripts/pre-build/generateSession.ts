@@ -110,7 +110,7 @@ function genResult (talks, rooms, speakers) {
       room: s.slot.room?.en || s.slot.room?.['zh-tw'],
       start: s.slot.start,
       end: s.slot.end,
-      language: s.content_locale === 'zh-tw' ? '漢語' : 'English',
+      language: s.content_locale === 'zh-tw' ? '華語' : 'English',
       zh: {
         title: s.title,
         description: getAnswer(s, SESSION_ZH_DESCRIPTION_ID, s.abstract || '')
