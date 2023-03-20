@@ -37,7 +37,7 @@ async function setupGeneratorForLocal (generator) {
   generator.on('done', () => {
     server.close()
     const content = fs.readFileSync(sitemapPath).toString()
-    fs.writeFileSync(sitemapPath, content.replace('encoding="utf-8"', 'encoding="UTF-8"').replace(new RegExp(`http://localhost:${PORT}`, 'g'), ORIGIN) + '\n')
+    fs.writeFileSync(sitemapPath, content.replace('encoding="utf-8"', 'encoding="UTF-8"').replace('<priority>1</priority>', '<priority>1.0</priority>').replace(new RegExp(`http://localhost:${PORT}`, 'g'), ORIGIN) + '\n')
     spinner.succeed('sitemap.xml generated.')
   })
 
