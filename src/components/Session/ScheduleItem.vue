@@ -55,13 +55,18 @@ import { defineComponent, computed, ref } from 'vue'
 import { useBreakpoints } from '@/modules/breakpoints'
 import { useI18n } from 'vue-i18n'
 import { Locale } from '@/modules/i18n'
-import { formatTimeString } from '@/modules/session/utils'
+// import { formatTimeString } from '@/modules/session/utils'
 import { useSession } from '@/modules/session'
+import { formatInTimeZone } from 'date-fns-tz'
 
 export default defineComponent({
   name: 'ScheduleItem',
   props: {
     sessionId: {
+      type: String,
+      required: true
+    },
+    currentTimeZone:{
       type: String,
       required: true
     }
@@ -81,14 +86,14 @@ export default defineComponent({
       }
     })
     const track = computed(() => session.value.type[locale.value as Locale].name)
-    const period = computed(() => `${formatTimeString(session.value.start, '：')} ~ ${formatTimeString(session.value.end, '：')}`)
+    const period = computed(() => `${formatInTimeZone(session.value.start, props.currentTimeZone, 'HH:mm')} ~ ${formatInTimeZone(session.value.end, props.currentTimeZone, 'HH:mm')}`)
+
     const title = computed(() => session.value[locale.value as Locale].title)
     const speakers = computed(() => session.value.speakers.map((speaker) => speaker[locale.value as Locale].name))
     const tags = computed(() => session.value.tags.map((tag) => tag[locale.value as Locale].name))
     const language = computed(() => session.value.language)
     const room = computed(() => session.value.room[locale.value as Locale].name.split(' / ')[0])
 
-    // const isFull = computed(() => !!(roomsStatus.value[session.value.room.id]))
     const isFull = ref(false)
     const statusText = computed(() => t(`session['room-status'].${isFull.value ? 'full' : 'vacancy'}`))
 

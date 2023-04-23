@@ -28,6 +28,12 @@ import { useSession } from '@/modules/session'
 
 export default defineComponent({
   name: 'AgendaNavbar',
+  props: {
+    currentTimeZone: {
+      type: String,
+      required: true
+    }
+  },
   setup () {
     const { isLoaded, currentDayIndex, daysSchedule } = useSession()
     const days = computed(() => daysSchedule.value.map(ds => ds.day))
