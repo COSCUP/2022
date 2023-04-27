@@ -264,7 +264,7 @@ export function generateSessionPopupContentHtml (session: Session, community: { 
         <div class="record-wrapper">
           <iframe
             class="record"
-            src="https://www.youtube-nocookie.com/embed/${session.record.split('?v=').pop()}"
+            src="https://www.youtube-nocookie.com/embed/${session.record.replace('https://youtu.be/', '')}"
             frameborder="0"
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen
