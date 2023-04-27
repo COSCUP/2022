@@ -4,6 +4,7 @@ import md5 from 'js-md5'
 import { saveJSON } from './utils'
 import { join } from 'path'
 import dotenv from 'dotenv'
+import { SESSION_RECORD_TABLE } from './sessionRecordTable'
 
 dotenv.config()
 dotenv.config({ path: join(__dirname, '../../.env.local') })
@@ -175,7 +176,7 @@ function genResult (talks, rooms, speakers) {
       co_write: getAnswer(s, SESSION_CO_WRITE_ID, null),
       qa: getAnswer(s, SESSION_QA_ID, null),
       slide: getAnswer(s, SESSION_SLIDE_ID, null),
-      record: getAnswer(s, SESSION_RECORD_ID, null),
+      record: SESSION_RECORD_TABLE[s.code] || null,
       uri: `https://coscup.org/2022/session/${s.code}`
     }
   })
