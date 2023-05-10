@@ -5,48 +5,51 @@ import Vue from '@vitejs/plugin-vue'
 import Components from 'vite-plugin-components'
 import ViteIcons, { ViteIconsResolver } from 'vite-plugin-icons'
 import { VitePWA } from 'vite-plugin-pwa'
+import generateSitemap from 'vite-ssg-sitemap'
 
 export default defineConfig(({ mode, command }) => {
   const parsed = loadEnv(mode, process.cwd())
 
   const renderRoutes = parsed?.VITE_LANDING_ONLY === 'yes'
-  ? (() => {
-      const routes = [
-        '/',
-        '/landing',
-        '/sponsorship',
-        '/map'
-      ].flatMap(r => [r, `${r}/`])
-      return Array.from(readdirSync('./locales/'))
-        .flatMap((locale) => {
-          return routes
-            .map((route) => join('/', locale, route))
-        })
-    })()
+    ? (() => {
+        const routes = [
+          '/',
+          '/landing',
+          '/sponsorship',
+          '/map'
+        ]
+        return Array.from(readdirSync('./locales/'))
+          .flatMap((locale) => {
+            return routes
+              .map((route) => join('/', locale, route))
+          })
+      })()
 
-  : (() => {
-      const routes = [
-        '/',
-        '/landing',
-        '/sponsorship',
-        '/session',
-        '/room',
-        '/community',
-        '/venue',
-        '/map',
-        '/sponsor',
-        '/staff'
-      ].flatMap(r => [r, `${r}/`])
+    : (() => {
+        const routes = [
+          '/',
+          '/landing',
+          '/sponsorship',
+          '/session',
+          '/room',
+          '/community',
+          '/venue',
+          '/map',
+          '/sponsor',
+          '/staff'
+        ]
 
-      return Array.from(readdirSync('./locales/'))
-        .flatMap((locale) => {
-          return routes
-            .map((route) => join('/', locale, route))
-            .concat(join('/', locale, '/session/template'))
-        })
-    })()
+        return Array.from(readdirSync('./locales/'))
+          .flatMap((locale) => {
+            return routes
+              .map((route) => join('/', locale, route))
+              .concat(join('/', locale, '/session/template'))
+          })
+      })()
 
   const gaTemplate = readFileSync(join(__dirname, './templates/ga-template.html')).toString()
+
+  const dynamicRoutesYear = Array.from(renderRoutes, r => join(parsed.VITE_BASE_URL, r))
 
   return {
     base: parsed?.VITE_BASE_URL,
@@ -82,7 +85,7 @@ export default defineConfig(({ mode, command }) => {
                   maxAgeSeconds: 60 * 60 * 24 * 30 // <== 30 days
                 },
                 cacheableResponse: {
-                  statuses: [0, 200, 301],
+                  statuses: [0, 200, 301]
                 }
               }
             },
@@ -96,15 +99,16 @@ export default defineConfig(({ mode, command }) => {
                   maxAgeSeconds: 60 * 60 * 24 * 5 // <== 5 days
                 },
                 cacheableResponse: {
-                  statuses: [0, 200, 301],
+                  statuses: [0, 200, 301]
                 }
               }
             }
           ]
         },
+        // eslint-disable-next-line multiline-ternary
         includeAssets: command === 'build' ? [
           // favicon
-          'favicon.svg',
+          'favicon.svg'
           // error
           // pwa
           // 'images/apple-icon-180.png',
@@ -141,32 +145,34 @@ export default defineConfig(({ mode, command }) => {
           name: 'COSCUP 2022',
           short_name: 'COSCUP 2022',
           theme_color: '#ffffff',
-          icons: command === 'build' ? [
-            {
-              src: `${parsed?.VITE_BASE_URL}images/manifest-icon-192.maskable.png`,
-              sizes: "192x192",
-              type: "image/png",
-              purpose: "any"
-            },
-            {
-              src: `${parsed?.VITE_BASE_URL}images/manifest-icon-192.maskable.png`,
-              sizes: "192x192",
-              type: "image/png",
-              purpose: "maskable"
-            },
-            {
-              src: `${parsed?.VITE_BASE_URL}images/manifest-icon-512.maskable.png`,
-              sizes: "512x512",
-              type: "image/png",
-              purpose: "any"
-            },
-            {
-              src: `${parsed?.VITE_BASE_URL}images/manifest-icon-512.maskable.png`,
-              sizes: "512x512",
-              type: "image/png",
-              purpose: "maskable"
-            }
-          ] : []
+          icons: command === 'build'
+            ? [
+                {
+                  src: `${parsed?.VITE_BASE_URL}images/manifest-icon-192.maskable.png`,
+                  sizes: '192x192',
+                  type: 'image/png',
+                  purpose: 'any'
+                },
+                {
+                  src: `${parsed?.VITE_BASE_URL}images/manifest-icon-192.maskable.png`,
+                  sizes: '192x192',
+                  type: 'image/png',
+                  purpose: 'maskable'
+                },
+                {
+                  src: `${parsed?.VITE_BASE_URL}images/manifest-icon-512.maskable.png`,
+                  sizes: '512x512',
+                  type: 'image/png',
+                  purpose: 'any'
+                },
+                {
+                  src: `${parsed?.VITE_BASE_URL}images/manifest-icon-512.maskable.png`,
+                  sizes: '512x512',
+                  type: 'image/png',
+                  purpose: 'maskable'
+                }
+              ]
+            : []
         }
       })
     ],
@@ -179,6 +185,22 @@ export default defineConfig(({ mode, command }) => {
       onPageRendered: (r, html) => {
         return html
           .replace('<template>%GA_TEMPLATE%</template>', gaTemplate)
+      },
+      onFinished () {
+        const fullDate = new Date()
+        const date = new Date(fullDate.getFullYear(), fullDate.getMonth(), fullDate.getDate())
+        const HostName = String(parsed.VITE_ORIGIN)
+
+        generateSitemap(
+          {
+            hostname: HostName,
+            dynamicRoutes: dynamicRoutesYear,
+            exclude: [...renderRoutes, '/', '/en', '/zh-TW'],
+            lastmod: date,
+            changefreq: undefined,
+            readable: true
+          }
+        )
       }
     }
   }
