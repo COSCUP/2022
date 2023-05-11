@@ -10,9 +10,20 @@ import type { Locale } from '../i18n'
 import type { MetaOptions } from '../metas'
 import type { PopUpData } from '../pop-up'
 import type { Session, ScheduleElement, RawData, SessionType, Room, Speaker, Tag, SessionsMap, ScheduleList, YearOfDate, MonthOfDate, DateOfDate, SchedulDay, HourOfDate, MinuteOfDate, ScheduleTable, RoomId, ScheduleTableBodyCell, ScheduleTableBlankCell, ScheduleTableSpanCell, RoomsMap } from './types'
+import { calculateTimezoneOffset, getDeviceTimezone } from './timezone'
+import { ref, Ref } from 'vue'
 
-export const TIMEZONE_OFFSET: number = -480
-// export const ROOM_ORDER = []
+const flag = false
+
+export const deviceTimezone = getDeviceTimezone(flag)
+
+console.log('deviceTimezone', deviceTimezone)
+
+export const TIMEZONE_OFFSET: Ref = ref(calculateTimezoneOffset(deviceTimezone))
+// export const TIMEZONE_OFFSET: Ref = ref(calculateTimezoneOffset(deviceTimezone))
+
+console.log('TIMEZONE_OFFSET', TIMEZONE_OFFSET)
+
 export const ROOM_ORDER: RoomId[] = [
   'RB105',
   'AU101',

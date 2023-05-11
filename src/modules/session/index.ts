@@ -42,13 +42,14 @@ const _useSession = (): UseSession => {
     start()
     const { default: _rawData } = await import('@/assets/json/session.json')
     const { scheduleElements: _scheduleElements, sessionsMap: _sessionsMap, roomsMap: _roomsMap } =
-      transformRawData(_rawData, TIMEZONE_OFFSET, ROOM_ORDER)
+      transformRawData(_rawData, TIMEZONE_OFFSET.value, ROOM_ORDER)
     scheduleElements.value = _scheduleElements
     sessionsMap.value = _sessionsMap
     roomsMap.value = _roomsMap
     isClient && await prepareRoomStatus()
     isLoaded.value = true
     done()
+    console.log('load done')
   }
 
   isClient && load()
@@ -101,7 +102,7 @@ const _useSession = (): UseSession => {
       currentSessions.value = []
       return
     }
-    const currentTime = fixedTimeZoneDate(new Date(), TIMEZONE_OFFSET).getTime()
+    const currentTime = fixedTimeZoneDate(new Date(), TIMEZONE_OFFSET.value).getTime()
     // const currentTime = fixedTimeZoneDate(new Date('2020-08-01 13:00'), TIMEZONE_OFFSET).getTime()
     currentSessions.value = Object.values(sessionsMap.value)
       .filter(s => s.start.getTime() <= currentTime && currentTime <= s.end.getTime())

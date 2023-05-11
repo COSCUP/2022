@@ -17,7 +17,7 @@ function getCommunityFromSession (session: Session) {
 }
 
 export default async function run () {
-  const { sessionsMap } = transformRawData(sessionJSON, TIMEZONE_OFFSET, ROOM_ORDER)
+  const { sessionsMap } = transformRawData(sessionJSON, TIMEZONE_OFFSET.value, ROOM_ORDER)
   await Promise.all(Array.from(readdirSync(join(__dirname, '../../locales/')))
     .map(async (locale) => {
       const templatePath = join(__dirname, `../../dist/${locale}/session/template.html`)
