@@ -11,12 +11,15 @@ import { Locale } from '@/modules/i18n'
 import sessionJSON from '@/assets/json/session.json'
 import communityData from '@/assets/json/community.json'
 import { Session } from '@/modules/session/types'
+import { useSession } from '@/modules/session'
 
 function getCommunityFromSession (session: Session) {
   return communityData.communities.find((c) => c.track === session.type['zh-TW'].name)
 }
-
+// FIXME: 這段如果有辦法的話可以轉為框架做法？
+// 目前是先算一個模板塞資料再用複製的方法
 export default async function run () {
+  const { TIMEZONE_OFFSET } = useSession()
   const { sessionsMap } = transformRawData(sessionJSON, TIMEZONE_OFFSET.value, ROOM_ORDER)
   await Promise.all(Array.from(readdirSync(join(__dirname, '../../locales/')))
     .map(async (locale) => {

@@ -26,7 +26,6 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue'
 import { useSession } from '@/modules/session'
-import { TIMEZONE_OFFSET } from '@/modules/session/logic'
 
 export default defineComponent({
   name: 'AgendaNavbar',
@@ -37,17 +36,16 @@ export default defineComponent({
     }
   },
   setup () {
-    const { isLoaded, currentDayIndex, daysSchedule } = useSession()
+    const { isLoaded, currentDayIndex, daysSchedule, TIMEZONE_OFFSET } = useSession()
 
     const days = computed(() => daysSchedule.value.map(ds => ds.day))
     const selectedDay = computed(() => days.value[currentDayIndex.value])
-
     const onTabClick = (dayIndex: number) => {
       currentDayIndex.value = dayIndex
     }
 
     function updateTimezone () {
-      TIMEZONE_OFFSET.value = 200
+      TIMEZONE_OFFSET.value = -420
       console.log('updateTimezone')
     }
 

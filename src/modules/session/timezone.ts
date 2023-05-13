@@ -11,12 +11,8 @@ export function calculateTimezoneOffset (timeZone:string): number {
   return result
 }
 
-export function getDeviceTimezone (flag:boolean): string {
-  if (flag !== true) {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone
-  } else {
-    return 'Asia/Tashkent'
-  }
+export function getDeviceTimezone (): string {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone
 }
 
 export function setFlag () {
