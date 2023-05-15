@@ -20,3 +20,4 @@ export function setFlag () {
   console.log('123412412412')
   return true
 }
+export const deviceTimezone = getDeviceTimezone()

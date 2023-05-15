@@ -9,7 +9,7 @@ import { ScheduleElement, SessionsMap, RoomId, ScheduleTable, ScheduleList, Sess
 import { fixedTimeZoneDate } from './utils'
 import { useProgress } from '../progress'
 import io, { Socket } from 'socket.io-client'
-import { calculateTimezoneOffset, getDeviceTimezone } from './timezone'
+import { calculateTimezoneOffset, deviceTimezone } from './timezone'
 interface UseSession {
   isLoaded: Ref<boolean>;
   currentDayIndex: Ref<number>;
@@ -37,13 +37,9 @@ const _useSession = (): UseSession => {
   const sessionsMap = ref<SessionsMap | null>(null)
   const roomsMap = ref<RoomsMap | null>(null)
   const isLoaded = ref<boolean>(false)
-
-  // const TIMEZONE_OFFSET = ref<number>(-480)
-  // 取得當前裝置時區
-  const deviceTimezone = getDeviceTimezone()
   const TIMEZONE_OFFSET: Ref = ref(calculateTimezoneOffset(deviceTimezone))
 
-  // transformRawData ??
+  // transformRawData -> scheduleElements, sessionsMap, roomsMap
   const load = async () => {
     if (isLoaded.value) return
     start()
@@ -51,16 +47,11 @@ const _useSession = (): UseSession => {
     const { scheduleElements: _scheduleElements, sessionsMap: _sessionsMap, roomsMap: _roomsMap } =
       transformRawData(_rawData, TIMEZONE_OFFSET.value, ROOM_ORDER)
     scheduleElements.value = _scheduleElements
-    console.log('scheduleElements.value', scheduleElements.value)
     sessionsMap.value = _sessionsMap
-    console.log('sessionsMap.value', sessionsMap.value)
     roomsMap.value = _roomsMap
-    console.log('roomsMap.value', roomsMap.value)
     isClient && await prepareRoomStatus()
-    console.log('isClient && await prepareRoomStatus()', isClient && await prepareRoomStatus())
     isLoaded.value = true
     done()
-    console.log('load done')
   }
 
   isClient && load()
@@ -70,12 +61,18 @@ const _useSession = (): UseSession => {
     if (scheduleElements.value === null) return []
     return getScheduleDays(scheduleElements.value)
       .map((scheduleDay) => {
-        console.log('scheduleDay', scheduleDay)
+        // console.log('scheduleDay.element', scheduleDay.elements)
+
         const day = scheduleDay.day
-        console.log('day', day)
+
+        // console.log('day', day)
+
         const table = generateScheduleTable(scheduleDay.elements)
-        console.log('table', table)
+
+        // console.log('table', table)
+        
         const list = generateScheduleList(scheduleDay.elements)
+
         return { day, table, list }
       })
   })

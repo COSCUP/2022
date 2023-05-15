@@ -19,7 +19,7 @@
         <span class="date">{{ day.join(" / ") }}</span>
       </div>
     </div>
-    <button type="button" @click="updateTimezone">change TIMEZONE_OFFSET : {{ TIMEZONE_OFFSET }}</button>
+    <!-- <button type="button" @click="updateTimezone">change TIMEZONE_OFFSET : {{ TIMEZONE_OFFSET }}</button> -->
   </nav>
 </template>
 
@@ -36,7 +36,8 @@ export default defineComponent({
     }
   },
   setup () {
-    const { isLoaded, currentDayIndex, daysSchedule, TIMEZONE_OFFSET } = useSession()
+    // const { isLoaded, currentDayIndex, daysSchedule, TIMEZONE_OFFSET } = useSession()
+    const { isLoaded, currentDayIndex, daysSchedule } = useSession()
 
     const days = computed(() => daysSchedule.value.map(ds => ds.day))
     const selectedDay = computed(() => days.value[currentDayIndex.value])
@@ -44,18 +45,18 @@ export default defineComponent({
       currentDayIndex.value = dayIndex
     }
 
-    function updateTimezone () {
-      TIMEZONE_OFFSET.value = -420
-      console.log('updateTimezone')
-    }
+    // function updateTimezone () {
+    //   TIMEZONE_OFFSET.value = -420
+    //   console.log('updateTimezone')
+    // }
 
     return {
       isLoaded,
       days,
       selectedDay,
       onTabClick,
-      updateTimezone,
-      TIMEZONE_OFFSET
+      // updateTimezone,
+      // TIMEZONE_OFFSET
     }
   }
 })

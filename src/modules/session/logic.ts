@@ -28,7 +28,6 @@ export const ROOM_ORDER: RoomId[] = [
   'TR409-1', 'TR409-2', 'TR410', 'TR411', 'TR412-1', 'TR412-2', 'TR413-1', 'TR413-2',
   'TR510'
 ]
-
 function mapSessionsWithIndex (sessions: Session[]):SessionsMap {
   return Object.fromEntries(sessions.map(s => [s.id, s]))
 }
@@ -166,8 +165,9 @@ export function getScheduleDays (elements: ScheduleElement[]): SchedulDay[] {
 
 export function generateScheduleTable (elements: ScheduleElement[]): ScheduleTable {
   const rooms: RoomId[] = uniq(elements.map(e => e.room))
+  console.log('rooms', rooms)
+  
   const timePoints = getTimePoints(elements)
-
   const blankCell: ScheduleTableBlankCell = {
     type: 'blank',
     rowspan: 1
@@ -185,7 +185,10 @@ export function generateScheduleTable (elements: ScheduleElement[]): ScheduleTab
             const { hour, minute } = getPartsOfDate(d)
             return timePoints.findIndex(([h, m]) => h === hour && m === minute)
           })
-        const span = endIndex - startIndex
+        // const span = endIndex - startIndex
+        const span = Math.abs(endIndex - startIndex)
+        console.log('span/////////', span)
+
         if (cells.slice(startIndex, endIndex).some(c => c.type !== 'blank')) {
           console.warn(`Session: ${e.session} is overlapping with others`)
           return
