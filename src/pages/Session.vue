@@ -22,12 +22,12 @@
         </div>
         <div class="time-zone-container">
           <p v-show="!isChangeTimeZone" class="time-zone-input">
-            {{ currentTimeZone }} 帶入時區字串
+            {{ currentTimeZone }}
           </p>
           <input
             v-show="isChangeTimeZone"
             placeholder=""
-            v-model="inputTimeZone"
+            v-model.trim="inputTimeZone"
             class="time-zone-input"
           />
           <button
@@ -98,6 +98,7 @@ export default defineComponent({
     const currentTimeZone = ref('')
     const inputTimeZone = ref('')
     const isChangeTimeZone = ref(false)
+    const isTimezoneValid = ref(false)
     //  取得當前時區
     const getCurrentTimeZone = async () => {
       try {
@@ -167,11 +168,26 @@ export default defineComponent({
     }
 
     const saveTimeZone = () => {
-      console.log(calculateTimezoneOffset(inputTimeZone.value))
-      console.log('saveTimeZone')
-      TIMEZONE_OFFSET.value = calculateTimezoneOffset(inputTimeZone.value)
+      if (inputTimeZone.value === '') {
+        alert('Invalid timezone')
+      } else {
+        validateTimezone()
+        if (isTimezoneValid.value) {
+          TIMEZONE_OFFSET.value = calculateTimezoneOffset(inputTimeZone.value)
+        } else {
+          alert('Invalid timezone')
+        }
+      }
     }
 
+    const validateTimezone = () => {
+      try {
+        Intl.DateTimeFormat(undefined, { timeZone: inputTimeZone.value });
+        isTimezoneValid.value = true
+      } catch (error) {
+        isTimezoneValid.value = false
+      }
+    }
     const resetTimeZone = () => {
       inputTimeZone.value = deviceTimezone
     }
