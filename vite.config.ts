@@ -50,6 +50,7 @@ export default defineConfig(({ mode, command }) => {
   const gaTemplate = readFileSync(join(__dirname, './templates/ga-template.html')).toString()
 
   const dynamicRoutesYear = Array.from(renderRoutes, r => join(parsed.VITE_BASE_URL, r))
+  dynamicRoutesYear.unshift(`${parsed?.VITE_BASE_URL}/`)
 
   return {
     base: parsed?.VITE_BASE_URL,
