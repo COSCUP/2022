@@ -12,7 +12,7 @@
     "ts": "node -r ./scripts/register.js",
     "after-build": "npm run ts -- ./scripts/after-build/index.ts",
     "end-build": "npm run ts -- ./scripts/end-build/index.ts",
-    "tool:generate-sitemap": "npm run ts -- ./scripts/tools/modifySitemap.ts",
+    "tool:generate-sitemap": "npm run ts -- ./scripts/tools/generateSitemap.ts",
     "tool:optimize-png": "node ./scripts/tools/optimizePng.js"
   },
   "dependencies": {
