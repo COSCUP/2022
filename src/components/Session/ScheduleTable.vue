@@ -25,7 +25,7 @@
           :rowspan="cell.rowspan"
         >
           <div class="cell-content">
-            <ScheduleItem v-if="cell.type === 'session'" :session-id="cell.element.session"></ScheduleItem>
+            <ScheduleItem v-if="cell.type === 'session'" :session-id="cell.element.session" :currentTimeZone="currentTimeZone"></ScheduleItem>
           </div>
         </td>
       </tr>
@@ -49,24 +49,11 @@ export default defineComponent({
     table: {
       type: Object as PropType<ScheduleTable>,
       required: true
+    },
+    currentTimeZone: {
+      type: String,
+      required: true
     }
   }
-  // setup (props) {
-  //   const router = useRouter()
-  //   const tableStyle = computed(() => ({ '--table-column': props.table.rooms.length }))
-  //   const getSessionLocation = (sessionId: string) => ({
-  //     name: 'AgendaDetail',
-  //     params: {
-  //       ...router.currentRoute.value.params,
-  //       sessionId
-  //     }
-  //   })
-
-  //   return {
-  //     languageType,
-  //     tableStyle,
-  //     getSessionLocation
-  //   }
-  // }
 })
 </script>

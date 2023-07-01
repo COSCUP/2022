@@ -64,6 +64,10 @@ export default defineComponent({
     sessionId: {
       type: String,
       required: true
+    },
+    currentTimeZone:{
+      type: String,
+      required: true
     }
   },
   setup (props) {
@@ -82,13 +86,13 @@ export default defineComponent({
     })
     const track = computed(() => session.value.type[locale.value as Locale].name)
     const period = computed(() => `${formatTimeString(session.value.start, '：')} ~ ${formatTimeString(session.value.end, '：')}`)
+
     const title = computed(() => session.value[locale.value as Locale].title)
     const speakers = computed(() => session.value.speakers.map((speaker) => speaker[locale.value as Locale].name))
     const tags = computed(() => session.value.tags.map((tag) => tag[locale.value as Locale].name))
     const language = computed(() => session.value.language)
     const room = computed(() => session.value.room[locale.value as Locale].name.split(' / ')[0])
 
-    // const isFull = computed(() => !!(roomsStatus.value[session.value.room.id]))
     const isFull = ref(false)
     const statusText = computed(() => t(`session['room-status'].${isFull.value ? 'full' : 'vacancy'}`))
 

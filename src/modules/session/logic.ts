@@ -10,9 +10,16 @@ import type { Locale } from '../i18n'
 import type { MetaOptions } from '../metas'
 import type { PopUpData } from '../pop-up'
 import type { Session, ScheduleElement, RawData, SessionType, Room, Speaker, Tag, SessionsMap, ScheduleList, YearOfDate, MonthOfDate, DateOfDate, SchedulDay, HourOfDate, MinuteOfDate, ScheduleTable, RoomId, ScheduleTableBodyCell, ScheduleTableBlankCell, ScheduleTableSpanCell, RoomsMap } from './types'
+import { calculateTimezoneOffset, getDeviceTimezone } from './timezone'
 
-export const TIMEZONE_OFFSET: number = -480
-// export const ROOM_ORDER = []
+const flag = false
+
+export const deviceTimezone = getDeviceTimezone(flag)
+
+console.log('deviceTimezone', deviceTimezone)
+
+// export const TIMEZONE_OFFSET: Ref = ref(calculateTimezoneOffset(deviceTimezone))
+
 export const ROOM_ORDER: RoomId[] = [
   'RB105',
   'AU101',
@@ -21,7 +28,6 @@ export const ROOM_ORDER: RoomId[] = [
   'TR409-1', 'TR409-2', 'TR410', 'TR411', 'TR412-1', 'TR412-2', 'TR413-1', 'TR413-2',
   'TR510'
 ]
-
 function mapSessionsWithIndex (sessions: Session[]):SessionsMap {
   return Object.fromEntries(sessions.map(s => [s.id, s]))
 }
@@ -159,8 +165,9 @@ export function getScheduleDays (elements: ScheduleElement[]): SchedulDay[] {
 
 export function generateScheduleTable (elements: ScheduleElement[]): ScheduleTable {
   const rooms: RoomId[] = uniq(elements.map(e => e.room))
+  console.log('rooms', rooms)
+  
   const timePoints = getTimePoints(elements)
-
   const blankCell: ScheduleTableBlankCell = {
     type: 'blank',
     rowspan: 1
@@ -178,7 +185,10 @@ export function generateScheduleTable (elements: ScheduleElement[]): ScheduleTab
             const { hour, minute } = getPartsOfDate(d)
             return timePoints.findIndex(([h, m]) => h === hour && m === minute)
           })
-        const span = endIndex - startIndex
+        // const span = endIndex - startIndex
+        const span = Math.abs(endIndex - startIndex)
+        console.log('span/////////', span)
+
         if (cells.slice(startIndex, endIndex).some(c => c.type !== 'blank')) {
           console.warn(`Session: ${e.session} is overlapping with others`)
           return
@@ -192,6 +202,8 @@ export function generateScheduleTable (elements: ScheduleElement[]): ScheduleTab
       })
       return cells
     })
+
+  console.log('///columnOfBody', columnsOfBody)
 
   const rowsOfBody: Exclude<ScheduleTableBodyCell, ScheduleTableSpanCell>[][] = timePoints.slice(0, -1)
     .map((tp, rowIndex) =>
@@ -221,7 +233,7 @@ export function generateScheduleList (elements: ScheduleElement[]): ScheduleList
       }))
   }
 }
-
+// FIXME: 這段如果有辦法的話可以轉為框架做法？
 export function generateSessionPopupContentHtml (session: Session, community: { id: string, name: { 'zh-TW': string, en: string } } | undefined, locale: Locale) {
   return html`
   <article id="session-detail" class="session-detail">
