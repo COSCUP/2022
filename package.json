@@ -12,8 +12,7 @@
     "ts": "node -r ./scripts/register.js",
     "after-build": "npm run ts -- ./scripts/after-build/index.ts",
     "end-build": "npm run ts -- ./scripts/end-build/index.ts",
-    "tool:generate-sitemap": "node ./scripts/tools/generateSitemap.js",
-    "tool:generate-sitemap:local": "node ./scripts/tools/generateSitemap.js --local",
+    "tool:generate-sitemap": "npm run ts -- ./scripts/tools/generateSitemap.ts",
     "tool:optimize-png": "node ./scripts/tools/optimizePng.js"
   },
   "dependencies": {
@@ -67,6 +66,7 @@
     "eslint-plugin-promise": "^4.3.1",
     "eslint-plugin-vue": "^7.9.0",
     "faker": "^5.5.3",
+    "fast-xml-parser": "^4.2.2",
     "find": "^0.3.0",
     "google-spreadsheet": "^3.1.15",
     "koa": "^2.13.0",
@@ -85,6 +85,7 @@
     "vite-plugin-components": "^0.8.3",
     "vite-plugin-icons": "^0.5.0",
     "vite-plugin-pwa": "^0.12.3",
-    "vite-ssg": "^0.9.2"
+    "vite-ssg": "^0.9.2",
+    "vite-ssg-sitemap": "^0.5.1"
   }
 }
