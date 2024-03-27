@@ -88,7 +88,7 @@ export default defineComponent({
             name: group.name,
             staffs: [
               ...group.chiefs.map((chief) => ({ ...chief, isChief: true })),
-              ...group.members.map((chief) => ({ ...chief, isChief: false }))
+              ...group.members.map((chief) => ({ ...chief, isChief: false })).filter((member) => !group.chiefs.find((chief) => chief.name === member.name))
             ]
           }
         })
